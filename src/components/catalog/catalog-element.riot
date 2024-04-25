@@ -32,7 +32,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <material-waves if="{ state.images }" center="true" color="#ddd"></material-waves>
       <span>
         <i class="material-icons">send</i>
-        { state.image || state.repo }
+        { state.image || state.repo } <span if="{ checkImage(state.image) }" class="github-label label-red">deprecated</span>
         <div if="{state.images}" class="item-count right">
           { state.nImages } images
           <i class="material-icons animated {state.expanded ? 'expanded' : ''}">expand_more</i>
@@ -57,6 +57,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       item="{ item }"
     ></catalog-element>
   </div>
+  <style>
+  .github-label {
+  display: inline-block;
+  padding: 4px 8px;
+  margin-left: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.label-red {
+  color: #fff;
+  background-color: #d73a49; /* Red color used by GitHub */
+}
+
+.label-green {
+  color: #fff;
+  background-color: #28a745; /* Green color used by GitHub */
+}
+  </style>
   <script>
     import router from '../../scripts/router';
     import { Http } from '../../scripts/http';
@@ -126,6 +146,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         });
         oReq.open('GET', props.registryUrl + '/v2/' + state.image + '/tags/list');
         oReq.send();
+      },
+      checkImage(image) {
+        console.log( image);
+        if (image) {
+          if (
+            (image.includes("ns-builder/image-develop-python3-8")) ||
+            ((
+            image.includes("-recent") ||
+            image.includes("ns-ep/actions-runner-dind-2004-current") ||
+            image.includes("ns-ep/buf") ||
+            image.includes("ns-ep/codeclimate-duplication-current") ||
+            image.includes("ns-ep/golang-alpine-current") ||
+            image.includes("ns-ep/golang-alpine-recent") ||
+            image.includes("ns-ep/golangci-lint-current") ||
+            image.includes("ns-ep/git-alpine-current") ||
+            image.includes("ns-ep/gradle-jdk18-alpine-recent") ||
+            image.includes("ns-ep/pipelinecomponents-yamllint-current") ||
+            image.includes("ns-ep/terraform") ||
+            image.includes("ns-ep/trivy") ||
+            image.includes("ns-ep/vanilla-alpine-recent") ||
+            image.includes("ns-ep/yamllint") ||
+            image.includes("ns-ep/yq")
+            ))
+          ) {
+            return true;
+          }
+        }
+        return false;
       },
       matchSearch,
       router,
