@@ -80,7 +80,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     import { Http } from '../../scripts/http';
     import { matchSearch } from '../search-bar.riot';
     import * as data from './renovate-replacements-v2.json';
-    export default {
+
+    let keys = new Set();
+    export default {      
       onBeforeMount(props, state) {
         if (props.item.images && props.item.images.length === 1) {
           state.image = props.item.images[0];
@@ -97,6 +99,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         }
       },
       onMounted(props, state) {
+        this.fetchData();
         const materialCard = this.$('material-card');
         if (materialCard) {
           materialCard.style['z-index'] = props.zIndex;
@@ -123,22 +126,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           }, 50);
         }
       },
-
-      checkImage(image) {
-        console.log("checking image :- ", image);
-        const keys = new Set();
+      fetchData() {
         for (const key in data.default) {
           if (key.includes("ns-ep") || key.includes("ns-builder")) {
-            console.log(`${key}`);
             keys.add(key);
           }
         }
-        if (keys.has(image)) {
-          return true;
-        } 
+        console.log(keys);
+      },
+      checkImage(image) {
+        console.log("checking image :- ", image);
+        if (image) {
+          if (image.includes("-recent")){
+            return true;
+          }
+        }
+        for (const key of keys) {
+          if (key.includes(image)) {
+            return true;
+          }
+        }
         return false;
       },
-
       getNbTags(props, state) {
         const self = this;
         const oReq = new Http({
