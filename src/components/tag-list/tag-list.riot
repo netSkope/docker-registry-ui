@@ -173,8 +173,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         state.asc = true;
       },
       checkImage(image) {
-        console.log("Checking image :- ", image);
-        console.log("Cached data :- ", cache);
         if (image) {
           if (image.includes("-recent")){
             return true;
@@ -188,11 +186,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         return false;
       },
       getImageLocation(image) {
-        console.log("Getting location of :- ", image);
-        console.log("Cached data :- ", cache);
         for (var key in cache) {
           if (key.includes(image)) {
-            console.log(cache[key]["repository"]);
             return cache[key]["repository"];
           }
         }
