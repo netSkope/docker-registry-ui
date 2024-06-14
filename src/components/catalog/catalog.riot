@@ -96,7 +96,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             this.state.numberOfDeprecatedImages = deprecatedImagesCount;
             console.log("Number of deprecated images: ", this.state.numberOfDeprecatedImages);
             this.update();
-
         }).catch(error => {
             console.error("Error:", error);
         });
@@ -136,9 +135,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         });
       },
       onClick() {
-        console.log("we are in here onClick");
         this.state.checkboxChecked = document.getElementById('reloadCheckbox');
-        console.log(this.state.checkboxChecked.checked);
         localStorage.setItem('checkboxChecked', this.state.checkboxChecked.checked);
         window.location.reload();
       },
@@ -157,7 +154,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         });
         oReq.addEventListener('load', function () {
           if (this.status === 200) {
-              
             let repositories_1 = JSON.parse(this.responseText).repositories || [];
             for (let i = 0; i < repositories_1.length; i++){
               if (!repositories_1[i].includes("unlabeled") && !repositories_1[i].includes("action-push")){
@@ -165,7 +161,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               }
             }
             repositories.sort();
-            
             nImages = repositories.length;
             if (typeof state.branching === 'function') {
               repositories = state.branching(repositories);
@@ -184,7 +179,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           } else {
             self.props.onNotify(this.responseText);
           }
-
         });
         oReq.addEventListener('error', function () {
           self.props.onNotify(this.getErrorMessage(), true);
@@ -201,7 +195,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         oReq.open('GET', catalogUrl);
         oReq.send();
       },
-      
     };
     export { cache }; 
   </script>
