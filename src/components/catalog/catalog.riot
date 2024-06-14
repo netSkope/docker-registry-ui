@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <h2>
         Repositories of { state.registryName }
         <div class="item-count">
-          { this.state.checkboxChecked ? `${state.nImages - this.state.numberOfDeprecatedImages} images in ${state.nRepositories} repositories (Checkbox is checked)` : `${state.nImages} images in ${state.nRepositories} repositories (Checkbox is unchecked)` }
+          { this.state.checkboxChecked ? `${state.nImages - this.state.numberOfDeprecatedImages} images in ${state.nRepositories} repositories` : `${state.nImages} images in ${state.nRepositories} repositories` }
           <br>
           <label for="reloadCheckbox">Exclude deprecated images</label>
           <input type="checkbox" id="reloadCheckbox" onclick={ () => this.onClick() } checked={ this.state.checkboxChecked }>
