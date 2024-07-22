@@ -277,20 +277,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       }
       return { key, value: value || '' };
     };
-
-    const getEnv = function (blobs, { historyCustomLabels }) {
-      const res = [
-        'Env'
-      ].reduce(function (acc, e) {
-        const value = blobs[e] || blobs.config[e];
-        for (let val of value) {
-          acc[val.split("=")[0]] = val.split("=")[1];
-        }
-        return acc;
-      }, {});
-      return res;
-    };
-
     const getConfig = function (blobs, { historyCustomLabels }) {
       const res = [
         'architecture',
