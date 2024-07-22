@@ -71,15 +71,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       entry="{ entry }"
     ></tag-history-element>
   </material-card>
-
-  <material-card each="{ element in state.elements }">
-    <tag-history-element
-      each="{ entry in element }"
-      if="{ entry.value && entry.key==='Env' && entry.value.length > 0}"
-      entry="{ entry }"
-    ></tag-history-element>
-  </material-card>
-
   <material-card each="{element in state.labelelements}">
    <image-label
     each="{ entry in element }"
@@ -87,7 +78,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     entry="{ entry }"
    ></image-label>
   </material-card>
-
 
   <script>
     import { DockerImage } from '../../scripts/docker-image';
@@ -149,7 +139,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             return {key:obj[0],value:obj[1]}
         })
         
- 
         function exec(elt) {
           const guiElements = [];
           for (var attribute in elt) {
@@ -161,8 +150,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           }
           return guiElements.sort(eltSort);
         }
-        const elements = new Array(1);
+        const elements = new Array(2);
         elements[0] = exec(getConfig(blobs, { historyCustomLabels }));
+        elements[1] = exec(getEnv(blobs, { historyCustomLabels }));
         
         // blobs.history.forEach(function (elt, i) {
         //   elements[blobs.history.length - i] = exec(elt);
@@ -272,6 +262,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       return { key, value: value || '' };
     };
 
+    const getEnv = function (blobs, { historyCustomLabels }) {
+      const res = [
+        'Env'
+      ].reduce(function (acc, e) {
+        const value = blobs[e] || blobs.config[e];
+        for (let val of value) {
+          acc[val.split("=")[0]] = val.split("=")[1];
+        }
+        return acc;
+      }, {});
+      return res;
+    };
+
     const getConfig = function (blobs, { historyCustomLabels }) {
       const res = [
         'architecture',
@@ -281,7 +284,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         'os',
         'Cmd',
         'Entrypoint',
-        'Env',
         'Labels',
         'User',
         'Volumes',
