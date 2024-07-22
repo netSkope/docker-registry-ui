@@ -78,8 +78,6 @@ export function getHistoryIcon(attribute) {
       return 'build';
     case 'size':
       return 'get_app';
-    case 'PATH':
-      return 'home';
     case 'ExposedPorts':
       return 'router';
     case 'comment':
@@ -88,7 +86,7 @@ export function getHistoryIcon(attribute) {
       if (attribute.startsWith('custom-label-')) {
         return 'label';
       }
-      return 'label';
+      return '';
   }
 }
 

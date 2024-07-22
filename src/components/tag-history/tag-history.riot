@@ -50,6 +50,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     on-close="{ onDockerfileClose }"
     elements="{ state.elements }"
     labelelements = "{ state.labelelements }"
+    envelements = "{ state.envelements }"
   ></dockerfile>
 
   <material-tabs
@@ -71,7 +72,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       entry="{ entry }"
     ></tag-history-element>
   </material-card>
+  
+  <material-card each="{element in state.envelements}">
+    <h3>&nbsp;&nbsp;ENV </h3>
+    <image-label
+      each="{ entry in element }"
+      if="{ entry.value && entry.value.length > 0}"
+      entry="{ entry }"
+    ></image-label>
+  </material-card>
+
   <material-card each="{element in state.labelelements}">
+   <h3>&nbsp;&nbsp;Labels </h3>
    <image-label
     each="{ entry in element }"
     if="{ entry.value && entry.value.length > 0}"
@@ -95,6 +107,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       onBeforeMount(props, state) {
         state.elements = [];
         state.labelelements = [];
+        state.envelements = [];
         state.image = new DockerImage(props.image, props.tag, {
           list: true,
           registryUrl: props.registryUrl,
@@ -114,6 +127,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         const { registryUrl, onNotify, useControlCacheHeader } = this.props;
         state.elements = [];
         state.labelelements = [];
+        state.envelements = [];
         state.image.variants[idx] =
           state.image.variants[idx] ||
           new DockerImage(this.props.image, arch.digest, {
@@ -132,13 +146,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       processBlobs(blobs) {
         const state = this.state;
         const { historyCustomLabels } = this.props;
-
         const labels = this.state.image.blobs.config.Labels;
         const temp = Object.entries(labels)
         const labelelements = temp.map(obj=>{
             return {key:obj[0],value:obj[1]}
         })
-        
+        const env = this.state.image.blobs.config.Env;
+        const tmp = Object.values(env)
+        const envelements = tmp.map(obj=>{
+            return {key:obj.split("=")[0],value:obj.split("=")[1]}
+        })
         function exec(elt) {
           const guiElements = [];
           for (var attribute in elt) {
@@ -150,10 +167,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           }
           return guiElements.sort(eltSort);
         }
-        const elements = new Array(2);
+        const elements = new Array(1);
         elements[0] = exec(getConfig(blobs, { historyCustomLabels }));
-        elements[1] = exec(getEnv(blobs, { historyCustomLabels }));
-        
         // blobs.history.forEach(function (elt, i) {
         //   elements[blobs.history.length - i] = exec(elt);
         // });
@@ -163,6 +178,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           loadend: true,
         });
         this.state.labelelements.push(labelelements);
+        this.state.envelements.push(envelements);
         this.update();
       },
 
