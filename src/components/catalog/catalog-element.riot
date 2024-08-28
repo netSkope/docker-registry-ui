@@ -128,7 +128,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       },
       checkImage(image) {
         let imageNameWithRepo = repoName+"/"+image ;
-        console.log("imageNameWithRepo",imageNameWithRepo);
         if (image) {
           if (image.includes("-recent")){
             return true;
@@ -136,7 +135,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         }
         for (var key in cache) {
           if (key.includes(imageNameWithRepo)) {
-            console.log("cache:"+key)
             return true;
           }
         }
