@@ -13,13 +13,13 @@ jobs:
         uses: actions/github-script@v6
         with:
             script: |
-               const res = await github.repos.createDispatchEvent(
+               const res = await github.repos.createDispatchEvent({
                   owner: 'netskope',
                   repo: 'netskope/ep-pokeball'
                   event_type: 'trigger-workflow'
                   workflow_id: 'docker-ui-push.yml',
                   ref: 'pr/EP-50381/gha',
-               );
+               });
                console.log(res);
         env:
           GITHUB_TOKEN: ${{secrets.BOT_TOKEN}}
