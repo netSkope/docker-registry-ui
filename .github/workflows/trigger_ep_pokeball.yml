@@ -15,8 +15,7 @@ jobs:
             script: |
                const res = await github.repos.createDispatchEvent({
                   owner: 'netskope',
-                  repo: 'netskope/ep-pokeball'
-                  event_type: 'trigger-workflow'
+                  repo: 'netskope/ep-pokeball',
                   workflow_id: 'docker-ui-push.yml',
                   ref: 'pr/EP-50381/gha',
                });
