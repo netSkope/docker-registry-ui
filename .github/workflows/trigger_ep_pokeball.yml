@@ -13,7 +13,7 @@ jobs:
         uses: actions/github-script@v6
         with:
             script: |
-               const res = await github.rest.actions.createDispatchEvent({
+               const res = await github.rest.actions.createWorkflowDispatch({
                   owner: 'netskope',
                   repo: 'netskope/ep-pokeball',
                   workflow_id: 'docker-ui-push.yml',
