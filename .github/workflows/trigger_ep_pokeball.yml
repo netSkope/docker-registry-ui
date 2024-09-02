@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Worklfow in EP-Pokeball Repo
-        uses: actions/github-script@v6
+        uses: actions/github-script@v5
         with:
             script: |
                const res = await github.repos.createDispatchEvent({
