@@ -15,11 +15,11 @@ jobs:
             script: |
                const res = await github.rest.actions.createWorkflowDispatch({
                   owner: 'netskope',
-                  repo: 'netskope/ep-pokeball',
+                  repo: 'netSkope/ep-pokeball',
                   workflow_id: 'docker-ui-push.yml',
-                  ref: 'pr/EP-50381/gha',
+                  ref: 'develop',
                });
                console.log(res);
         env:
-          GITHUB_TOKEN: ${{secrets.BOT_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.TEST_BOT_TOKEN}}
  
