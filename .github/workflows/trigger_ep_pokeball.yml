@@ -10,17 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Worklfow in EP-Pokeball Repo
-        uses: actions/github-script@v6
-        with:
-            script: |
-               const res = await github.rest.actions.createWorkflowDispatch({
-                  owner: 'netSkope',
-                  repo: 'ep-pokeball',
-                  workflow_id: 'Build and push Docker UI for ep-pokeball',
-                  event_type: 'trigger-workflow',
-                  ref: 'pr/EP-50381/gha-2',
-               });
-               console.log(res);
-        env:
-          GITHUB_TOKEN: ${{secrets.TEST_BOT_TOKEN}}
- 
+        run: |
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.TEST_BOT_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/netSkope/ep-pokeball/actions/workflows/docker-ui-push.yml/dispatches \
+          -d '{"ref":"pr/EP-50381/gha-2""}'
+    
