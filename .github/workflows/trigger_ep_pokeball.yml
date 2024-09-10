@@ -16,7 +16,7 @@ jobs:
                const res = await github.rest.actions.createWorkflowDispatch({
                   owner: 'netSkope',
                   repo: 'ep-pokeball',
-                  workflow_id: 'docker-ui-push.yml',
+                  workflow_id: 'Build and push Docker UI for ep-pokeball',
                   event_type: 'trigger-workflow',
                   ref: 'pr/EP-50381/gha-2',
                });
