@@ -17,6 +17,7 @@ jobs:
                   owner: 'netSkope',
                   repo: 'ep-pokeball',
                   workflow_id: 'docker-ui-push.yml',
+                  event_type: 'trigger-workflow',
                   ref: 'pr/EP-50381/gha-2',
                });
                console.log(res);
