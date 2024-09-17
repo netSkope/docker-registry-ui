@@ -291,7 +291,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
            reportData = await fetchReport(state.image.name.split("/")[0], state.image.name.split("/")[1], state.image.tag);
         }
         console.log("reportData", reportData);
-        if (reportData == null){
+        if (reportData === null){
           populateTable(null);
         }
         else if ( 'error' in reportData) {
