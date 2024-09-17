@@ -125,6 +125,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         state.elements = [];
         state.labelelements = [];
         state.envelements = [];
+        state.pullUrl = ""
         const now = new Date();
         state.lastRefreshedTS = now.toISOString().split("T")[0];
         state.image = new DockerImage(props.image, props.tag, {
@@ -142,6 +143,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         state.image.on('list', this.multiArchList);
         const materialCard = document.getElementById('materialCard');
         console.log("tag:",props.pullUrl);
+        state.pullUrl = props.pullUrl;
 
         // Check if repoName is present and not empty
         if (!props.pullUrl.includes('tool')) {
@@ -286,20 +288,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         elements[0] = exec(getConfig(blobs, { historyCustomLabels }));
         const reportData = await fetchReport(state.image.name.split("/")[0], state.image.name.split("/")[1], state.image.tag);
         console.log("reportData", reportData);
-        if ('error' in reportData) {
-          console.log("Error in downloading report. Please check existence of the report in artifactory");
-          populateTable(null);
-        } else {
-          populateTable(reportData);
-          const date1 = new Date(reportData.Image["CreatedAt"]);
-          const date2 = new Date(reportData.TrivyDB["UpdatedAt"]);
-          // Compare the dates and pick the latest one
-          const latestDate = date1 > date2 ? date1 : date2;
-          // Format the latest date as a string if needed
-          const latestTimestamp = formatDateWithMonthName(latestDate);
-          //const latestTimestamp = latestDate.toISOString().split("T")[0];
-          state.lastRefreshedTS = latestTimestamp;
-          shouldShowLastUpdated = true;
+        if (!state.pullUrl.includes("tool")){
+          if ('error' in reportData) {
+            console.log("Error in downloading report. Please check existence of the report in artifactory");
+            populateTable(null);
+          } else {
+            populateTable(reportData);
+            const date1 = new Date(reportData.Image["CreatedAt"]);
+            const date2 = new Date(reportData.TrivyDB["UpdatedAt"]);
+            // Compare the dates and pick the latest one
+            const latestDate = date1 > date2 ? date1 : date2;
+            // Format the latest date as a string if needed
+            const latestTimestamp = formatDateWithMonthName(latestDate);
+            //const latestTimestamp = latestDate.toISOString().split("T")[0];
+            state.lastRefreshedTS = latestTimestamp;
+            shouldShowLastUpdated = true;
+          }
         }
         // Get the element
         const lastUpdatedElement = document.getElementById('last-updated');
