@@ -228,14 +228,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         }
 
         // Map each class to its corresponding URL
-        const links = {
-            base: "https://base.ep-pokeball.netskope.io",
-            service: "https://service.ep-pokeball.netskope.io",
-            tool: "https://tool.ep-pokeball.netskope.io",
-        }
+        const links = [
+            "base",
+            "service", 
+            "tool"
+        ]
       
         // Loop through the links and hide the div corresponding to the current URL
-        Object.keys(links).forEach(linkClass => {
+       links.forEach(linkClass => {
             if (props.pullUrl.includes(linkClass)) {
                 document.querySelector(`.${linkClass}`).classList.add('hidden');
             }
