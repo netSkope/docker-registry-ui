@@ -15,5 +15,5 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.BOT_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/netSkope/ep-pokeball/actions/workflows/docker-ui-push.yml/dispatches \
-          -d '{"ref":"develop"}'
+          -d '{"ref":"pr/EP-50381/gha-2"}'
     
