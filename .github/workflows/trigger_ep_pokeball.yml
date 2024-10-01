@@ -3,7 +3,7 @@ name: Trigger EP-Pokeball Workflow
 on:
   push:
     branches: 
-        - netskope@main
+        - pr/EP-50381/gha-ui
 
 jobs:
   trigger-another-repo:
