@@ -12,7 +12,7 @@ jobs:
       - name: Trigger Worklfow in EP-Pokeball Repo
         run: |
           curl -X POST \
-          -H "Authorization: Bearer ${{ secrets.TEST_BOT_TOKEN }}" \
+          -H "Authorization: Bearer ${{ secrets.BOT_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/netSkope/ep-pokeball/actions/workflows/docker-ui-push.yml/dispatches \
           -d '{"ref":"develop"}'
