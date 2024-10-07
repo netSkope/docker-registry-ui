@@ -24,15 +24,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <span class='slack_logo' id='slack_logo'></span>
         </a>
         <div class="link-group">
-          <div class="tool">
-            <a href="https://tool.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer">Tool</a>
+          <div class="base">
+            <a href="https://base.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer">Base</a>
           </div>
           <div class="service">
             <a href="https://service.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer">Service</a>
           </div>
-          <div class="base">
-            <a href="https://base.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer">Base</a>
-          </div>
+          <div class="tool">
+            <a href="https://tool.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer">Tool</a>
+          </div> 
         </div>
         <div class="help">
           <a href="https://netskope.atlassian.net/wiki/spaces/PE/pages/4715446464/Pokeball" target="_blank" rel="noopener noreferrer">Help</a>
@@ -237,7 +237,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         // Loop through the links and hide the div corresponding to the current URL
        links.forEach(linkClass => {
             if (props.pullUrl.includes(linkClass)) {
-                document.querySelector(`.${linkClass}`).classList.add('hidden');
+                //document.querySelector(`.${linkClass}`).classList.add('hidden');
+              const div = document.querySelector(`.${linkClass}`);
+    
+              if (div) {
+                const link = div.querySelector('a');
+                
+                if (link) {
+                  // Disable the <a> tag
+                  link.classList.add('disabled-link');
+                  link.style.pointerEvents = 'none';   // Disable pointer events
+                  link.style.color = 'grey';           // Make link appear greyed out
+                  link.style.cursor = 'default';       // Change cursor to default
+                }
+              }
             }
         });
       },
@@ -379,6 +392,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       margin-left: -60px; /* Center the tooltip */
       opacity: 0;
       transition: opacity 0.3s;
+    }
+    .disabled-link {
+      color: grey;              /* Make the link greyed out */
+      pointer-events: none;      /* Prevent clicking */
+      text-decoration: none;     /* Optionally remove underline */
+      cursor: default;           /* Set the cursor to default */
     }
 
     material-navbar .nav-wrapper .menu {
