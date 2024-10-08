@@ -22,7 +22,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <version-notification version="{ latest }" on-notify="{ notifySnackbar }"></version-notification>
         <a href="https://netskope.slack.com/archives/C03G4TJ6N4C" target="_blank" rel="noopener noreferrer">
         <span class='slack_logo' id='slack_logo'></span>
-        </a> 
+        </a>
+        <div class="like-buttons">
+          <div class="base">
+            <a href="https://base.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer" class="like-btn base-btn">Base</a>
+          </div>
+          <div class="service">
+            <a href="https://service.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer"class="like-btn service-btn">Services</a>
+          </div>
+          <div class="tool">
+            <a href="https://tool.ep-pokeball.netskope.io" target="_blank" rel="noopener noreferrer"class="like-btn tool-btn">Tools</a>
+          </div> 
+        </div>
         <div class="help">
           <a href="https://netskope.atlassian.net/wiki/spaces/PE/pages/4715446464/Pokeball" target="_blank" rel="noopener noreferrer">Help</a>
         </div>
@@ -215,6 +226,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         if (slackVersion){
           slackVersion.innerHTML = slackIcon().firstElementChild.outerHTML;
         }
+
+        // Map each class to its corresponding URL
+        const links = [
+            "base",
+            "service", 
+            "tool"
+        ]
+      
+        // Loop through the links and hide the div corresponding to the current URL
+       links.forEach(linkClass => {
+            if (props.pullUrl.includes(linkClass)) {
+                //document.querySelector(`.${linkClass}`).classList.add('hidden');
+              const div = document.querySelector(`.${linkClass}`);
+    
+              if (div) {
+                const link = div.querySelector('a');
+                
+                if (link) {
+                  // Disable the <a> tag
+                  link.classList.add('disabled-link');
+                  link.style.pointerEvents = 'none';   // Disable pointer events
+                  link.style.color = 'grey';           // Make link appear greyed out
+                  link.style.cursor = 'default';       // Change cursor to default
+                }
+              }
+            }
+        });
       },
       onServerChange(registryUrl) {
         this.update({
@@ -312,10 +350,44 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       right: 20px;
       position: absolute;
     }
+    .link-group {
+      display: flex;
+      gap: 15px;
+      position: absolute;  
+      right: 320px;
+    }
+    .like-buttons {
+      display: flex;
+      gap: 15px;
+      position: absolute;  
+      right: 320px;
+    }
+    .like-btn {
+      display: inline-block;
+      border: 2px solid black;  /* Rectangle border */
+      background-color: none;  /* Background color */
+      padding: 10px 20px;       /* Padding around text */
+      font-size: 16px;          /* Text size */
+      cursor: pointer;          /* Pointer on hover */
+      border-radius: 25px;       /* Rounded corners */
+      text-decoration: none;    /* Remove underline from the links */
+      color: white;             /* Set link text color */
+      text-transform: capitalize; /* Capitalize first letter */
+      transition: background-color 0.3s ease; /* Smooth hover effect */
+    }
+
+    /* Hover effect */
+    .like-btn:hover {
+      background-color: lightgrey; /* Background color on hover */
+      color: black;                /* Ensure text color remains black */
+    }
     .help{
       display: flex;
       position: absolute;
       right: 220px;
+    }
+    .hidden {
+      display: none;
     }
     .custom_logo{
       width: 150px;
@@ -345,6 +417,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       margin-left: -60px; /* Center the tooltip */
       opacity: 0;
       transition: opacity 0.3s;
+    }
+    .disabled-link {
+      color: grey;              /* Make the link greyed out */
+      pointer-events: none;      /* Prevent clicking */
+      text-decoration: none;     /* Optionally remove underline */
+      cursor: default;           /* Set the cursor to default */
     }
 
     material-navbar .nav-wrapper .menu {
