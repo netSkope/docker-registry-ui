@@ -29,6 +29,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <i class="material-icons">arrow_back</i>
       </material-button>
       <h2>History of { props.image }:{ props.tag } <i class="material-icons">history</i></h2>
+       <a id="diveReportLink" href="" target="_blank" >
+        <img id="diveimageicon" src="../images/Diving-01.svg" alt="Dive Report Icon" title="Dive Report" >
+      </a>
     </div>
   </material-card>
   <div if="{ !state.loadend }" class="spinner-wrapper">
@@ -114,6 +117,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     import ImageLabel from './image-label.riot';
     import { fetchReport, createRectanglesContainer, SEVERITY_MAP } from '../utility/utility';
     import { repoName } from '../catalog/catalog.riot';
+    import { fetchDiveReport } from '../utility/dive';
     let shouldShowLastUpdated = false;
     export default {
       components: {
@@ -319,6 +323,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             lastUpdatedElement.classList.add('hidden');
         }
         shouldShowLastUpdated = false;
+        const imageNameParts = state.image.name.split("/");
+        const family = imageNameParts[0];
+        const image = imageNameParts[1];
+        const tag = state.image.tag;
+        const queryParams = new URLSearchParams({ family, image, tag }).toString();
+        const backend_url = `https://ep-pokeball.netskope.io/api/dive/report?${queryParams}`;
+        document.getElementById('diveReportLink').setAttribute('href', backend_url);
+        try {
+          const response = await fetch(backend_url);
+          if (response.status === 200) {
+            document.getElementById('diveReportLink').setAttribute('href', backend_url);
+            document.getElementById('diveimageicon').setAttribute('title', `Dive Report: ${family}/${image}:${tag}`);
+          } else {
+            document.getElementById('diveReportLink').style.display = 'none';
+          }
+        } catch (error) {
+          console.error('Error fetching dive report:', error);
+          document.getElementById('diveReportLink').style.display = 'none';
+        }
         this.update({
           elements,
           loadend: true,
@@ -466,6 +489,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     };
   </script>
   <style>
+    #diveReportLink {
+      display: inline-block;
+      margin-left: 10px;
+    }
+    #diveimageicon {
+      width: 60px;
+      height: 30px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #diveimageicon:hover {
+      transform: scale(1.1);
+    }
     #no-vulnerability-container {
       text-align: center;
       padding: 20px;

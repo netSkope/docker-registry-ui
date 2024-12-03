@@ -38,6 +38,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <i class="material-icons animated {state.expanded ? 'expanded' : ''}">expand_more</i>
         </div>
         <div if="{props.showCatalogNbTags && state.image}" class="item-count right">
+          <span if="{state.efficiencyScore}" class="efficiency-score" > Efficiency: { state.efficiencyScore }</span>
           { state.nbTags } tags
           <i class="material-icons animated"></i>
         </div>
@@ -58,6 +59,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     ></catalog-element>
   </div>
   <style>
+  .efficiency-score {
+    font-weight: lighter;
+    font-style: italic;
+    margin-right: 10px; /* Adjust the value as needed to move it to the left */
+  }
   .github-label {
   display: inline-block;
   padding: 4px 8px;
@@ -81,9 +87,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     import { matchSearch } from '../search-bar.riot';
     import { cache } from '../catalog/catalog.riot';
     import { repoName } from '../catalog/catalog.riot';
+    import { fetchDiveReport } from '../utility/dive';
     
     export default {
       onBeforeMount(props, state) {
+        state.efficiencyScore = "";
         if (props.item.images && props.item.images.length === 1) {
           state.image = props.item.images[0];
         } else if (typeof props.item === 'string') {
@@ -148,8 +156,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         });
         oReq.addEventListener('loadend', function () {
           if (this.status === 200) {
-            const nbTags = (JSON.parse(this.responseText).tags || []).length;
-            self.update({ nbTags });
+            const tags_list = JSON.parse(this.responseText).tags;
+            const nbTags = (tags_list || []).length;
+            state.tags_list = tags_list;
+            self.update({ nbTags, tags_list });
+            self.getEfficiency(props, state); // Call getEfficiency after tags_list is populated
           } else if (this.status === 404) {
             props.onNotify('Server not found', true);
           } else {
@@ -161,6 +172,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         });
         oReq.open('GET', props.registryUrl + '/v2/' + state.image + '/tags/list');
         oReq.send();
+      },
+      getEfficiency(props, state) {
+        if (!state.tags_list || state.tags_list.length === 0) {
+          console.error("No tags available");
+          return;
+        }
+        let tags_list = state.tags_list;
+        let latestTag = tags_list[tags_list.length - 1]; // Assuming the latest tag is the last one in the list
+        let family = state.image.split("/")[0];
+        let image = state.image.split("/")[1];
+        let tag = state.tags_list;
+        fetchDiveReport(family, image, latestTag)
+          .then(response => {
+            return typeof response === 'string' ? JSON.parse(response) : response;
+          })
+          .then(reportData => {
+            this.state.efficiencyScore =  parseFloat(reportData.image.efficiencyScore).toFixed(2) * 100;
+            this.update();
+          })
+          .catch(error => {
+            console.error("Error fetching report data:", error);
+          });
       },
       matchSearch,
       router,
