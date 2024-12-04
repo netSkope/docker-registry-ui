@@ -174,6 +174,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         oReq.send();
       },
       getEfficiency(props, state) {
+        console.log("tags_list: ", this.state.tags_list);
         if (!state.tags_list || state.tags_list.length === 0) {
           console.error("No tags available");
           return;
@@ -183,12 +184,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         let family = state.image.split("/")[0];
         let image = state.image.split("/")[1];
         let tag = state.tags_list;
+
         fetchDiveReport(family, image, latestTag)
           .then(response => {
             return typeof response === 'string' ? JSON.parse(response) : response;
           })
           .then(reportData => {
             this.state.efficiencyScore =  parseFloat(reportData.image.efficiencyScore).toFixed(2) * 100;
+            console.log("efficiencyScore: ", this.state.efficiencyScore, tags_list, latestTag, family, tag);
             this.update();
           })
           .catch(error => {
