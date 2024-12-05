@@ -102,6 +102,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           state.nImages = props.item.images.length;
           state.expanded = props.catalogDefaultExpanded;
         }
+        console.log("props:",props.showCatalogNbTags, state.image)
         if (props.showCatalogNbTags && state.image) {
           this.getNbTags(props, state);
         }
@@ -149,6 +150,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         return false;
       },
       getNbTags(props, state) {
+        console.log("getNbTags:",)
         const self = this;
         const oReq = new Http({
           onAuthentication: props.onAuthentication,
@@ -159,6 +161,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             const tags_list = JSON.parse(this.responseText).tags;
             const nbTags = (tags_list || []).length;
             state.tags_list = tags_list;
+            console.log("tags_list:",tags_list,nbTags);
             self.update({ nbTags, tags_list });
             self.getEfficiency(props, state); // Call getEfficiency after tags_list is populated
           } else if (this.status === 404) {
