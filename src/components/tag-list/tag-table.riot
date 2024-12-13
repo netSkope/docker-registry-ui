@@ -27,12 +27,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     on-image-deleted="{ props.onImageDeleted }"
   ></confirm-delete-image>
   <material-card class="taglist">
-    <table style="border: none; table-layout: fixed; width: 100%;">
-    <col id="col1" style="width: 25%;" />
-    <col id="col2" style="width: 25%;" />
-    <col id="col3" style="width: 25%;" />
-    <col id="vulnerabilitiesColumn" style="width: 20%; display: none;" />
-    <col id="col4" style="width: 25%;" />
+    <table style="border-collapse: collapse; table-layout: fixed; width: 100%;">
+    <col id="col1" style="width: 16.67%;" />
+    <col id="col2" style="width: 16.67%;" />
+    <col id="col3" style="width: 16.67%;" />
+    <col id="vulnerabilitiesColumn" style="width: 16.67%; display: none;" />
+    <col id="efficiency" style="width:16.67%" />
+    <col id="col4" style="width: 16.67%;" />
       <thead>
         <tr>
           <th
@@ -48,6 +49,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <!-- <th id="image-content-digest-header" if="{ props.showContentDigest }">Content Digest</th> -->
           <th class="architectures">Arch</th>
           <th class="vulnerabilities" id="vulnerabilitiesHeader">Vulnerabilities</th>
+          <th class="efficiency" id="efficiencyHeader">Efficiency</th>
           <th class="show-tag-history">History</th>
           <th
             class="remove-tag { state.toDelete.size > 0 && !state.singleDeleteAction ? 'delete' : '' }"
@@ -105,6 +107,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <td class="dynamic-data vulnerabilitiesColumn" id="vulnerabilitiesHeader" >
             <!-- Placeholder or default content -->
           </td>
+          <td class="efficiency">
+             <efficiency image="{ image }"></efficiency>
+          </td>
           <td class="show-tag-history">
             <tag-history-button image="{ image }"></tag-history-button>
           </td>
@@ -125,6 +130,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </material-card>
   <script>
     import { getPage } from '../../scripts/utils';
+    import Efficiency from './efficiency.riot';
     import ImageDate from './image-date.riot';
     import ImageSize from './image-size.riot';
     import ImageTag from './image-tag.riot';
@@ -150,6 +156,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         TagHistoryButton,
         ConfirmDeleteImage,
         Architectures,
+        Efficiency,
       },
       onBeforeMount(props) {
         this.state = {
@@ -237,6 +244,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         const cols = ['col1', 'col2', 'col3', 'col4'].map(id => document.getElementById(id));
         const isToolIncluded = props.pullUrl.includes('tool');
         console.log("isToolIncluded:",isToolIncluded);
+
+        // efficiency variables
+        const efficiencies = {}
         
         if (isToolIncluded) {
             // Hide vulnerabilities column header
@@ -247,7 +257,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             vulnerabilitiesColumn.forEach(cell => cell.style.display = 'none');
 
             // Adjust column widths
-            cols.forEach(col => col.style.width = '25%');
+            cols.forEach(col => col.style.width = '16.67%');
           } else {
               // Show vulnerabilities column header
               vulnerabilitiesHeader.style.display = '';
@@ -363,11 +373,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   </script>
   <style>
+    .tag-table th, .tag-table td {
+      width: 16.67%;
+      padding: 8px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
     tag-table table th.architectures {
       text-align: center;
     }
     tag-table table th.vulnerabilities {
       text-align: center;
     }
+    tag-table table th.efficiency {
+      text-align: center;
+    }
+
   </style>
 </tag-table>

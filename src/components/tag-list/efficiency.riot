@@ -1,0 +1,40 @@
+<efficiency>
+  <div class="efficiency-container">{ efficiency }%</div>
+  <script>
+    import { fetchDiveReport } from '../utility/dive';
+    export default {
+      onMounted(props) {
+        console.log("efficiecncy:---",props.image);
+
+        //let latestTag = tags_list[tags_list.length - 1]; // Assuming the latest tag is the last one in the list
+        let family = props.image.name.split("/")[0];
+        let image = props.image.name.split("/")[1];
+        let tag = props.image.tag;
+
+        fetchDiveReport(family, image, tag)
+          .then(response => {
+            return typeof response === 'string' ? JSON.parse(response) : response;
+          })
+          .then(reportData => {
+            this.efficiency =  parseFloat(reportData.image.efficiencyScore).toFixed(2) * 100;
+            console.log("efficiencyScore: ", this.efficiency,tag, family, tag);
+            this.update();
+          })
+          .catch(error => {
+            console.error("Error fetching report data:", error);
+          });
+
+       },
+    };
+  </script>
+  <style>
+    .efficiency-container {
+      padding: 0;
+      border: none;
+      background-color: transparent;
+      color: #333;
+      font-size: 16px;
+      text-align: center;
+    }
+  </style>
+</efficiency>
