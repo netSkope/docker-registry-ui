@@ -28,12 +28,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   ></confirm-delete-image>
   <material-card class="taglist">
     <table style="border: none; table-layout: fixed; width: 100%;">
-    <col id="col1" style="width: 20%;" />
-    <col id="col2" style="width: 20%;" />
-    <col id="col3" style="width: 20%;" />
-    <col id="vulnerabilitiesColumn" style="width: 20%; display: none;" />
-    <col id="efficiencyColumn" style="width: 20%;" />
-    <col id="col4" style="width: 20%;" />
+    <col id="col1" style="width: var(--col-width);" />
+    <col id="col2" style="width: var(--col-width);" />
+    <col id="col3" style="width: var(--col-width);" />
+    <col id="vulnerabilitiesColumn" style="width: var(--col-width); display: none;" />
+    <col id="efficiencyColumn" style="width: var(--col-width);" />
+    <col id="col4" style="width: var(--col-width);" />
       <thead>
         <tr>
           <th
@@ -243,7 +243,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         const efficiencyColumn = document.querySelectorAll('.efficiencyColumn');
         const efficiencyHeader = document.getElementById('efficiencyHeader');
         const cols = ['col1', 'col2', 'col3', 'col4', 'efficiencyColumn'].map(id => document.getElementById(id));
-        const isToolIncluded = true;
+        const isToolIncluded = props.pullUrl.includes('tool');
         console.log("isToolIncluded:",isToolIncluded);
         
         const diveReportsData = {};
@@ -381,6 +381,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   </script>
   <style>
+    /* Define CSS variables for consistent values */
+    :root {
+      --col-width: 20%;
+    }
+
     /* Aligning all headers and data cells to center */
     tag-table table th,
     tag-table table td {
