@@ -243,8 +243,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         const efficiencyColumn = document.querySelectorAll('.efficiencyColumn');
         const efficiencyHeader = document.getElementById('efficiencyHeader');
         const cols = ['col1', 'col2', 'col3', 'col4', 'efficiencyColumn'].map(id => document.getElementById(id));
-        const isToolIncluded = props.pullUrl.includes('tool');
-        console.log("isToolIncluded:",isToolIncluded);
         
         const diveReportsData = {};
         for (let i = 0, len = props.tags.length; i < len; i++) {
@@ -262,7 +260,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             row.querySelector('td.dive-dynamic-data').textContent = parseFloat(diveReportsData[idx].image.efficiencyScore).toFixed(2) * 100;
           }
         });
-
+        const isToolIncluded = props.pullUrl.includes('tool');
+        console.log("isToolIncluded:",isToolIncluded);
         if (isToolIncluded) {
             // Hide vulnerabilities column header
             vulnerabilitiesHeader.style.display = 'none';
