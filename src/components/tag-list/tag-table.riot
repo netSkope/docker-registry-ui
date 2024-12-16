@@ -28,11 +28,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   ></confirm-delete-image>
   <material-card class="taglist">
     <table style="border: none; table-layout: fixed; width: 100%;">
-    <col id="col1" style="width: 25%;" />
-    <col id="col2" style="width: 25%;" />
-    <col id="col3" style="width: 25%;" />
+    <col id="col1" style="width: 20%;" />
+    <col id="col2" style="width: 20%;" />
+    <col id="col3" style="width: 20%;" />
     <col id="vulnerabilitiesColumn" style="width: 20%; display: none;" />
-    <col id="col4" style="width: 25%;" />
+    <col id="efficiencyColumn" style="width: 20%;" />
+    <col id="col4" style="width: 20%;" />
       <thead>
         <tr>
           <th
@@ -48,6 +49,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <!-- <th id="image-content-digest-header" if="{ props.showContentDigest }">Content Digest</th> -->
           <th class="architectures">Arch</th>
           <th class="vulnerabilities" id="vulnerabilitiesHeader">Vulnerabilities</th>
+          <th class="efficiency" id="efficiencyHeader">Efficiency</th>
           <th class="show-tag-history">History</th>
           <th
             class="remove-tag { state.toDelete.size > 0 && !state.singleDeleteAction ? 'delete' : '' }"
@@ -105,6 +107,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <td class="dynamic-data vulnerabilitiesColumn" id="vulnerabilitiesHeader" >
             <!-- Placeholder or default content -->
           </td>
+          <td class="dive-dynamic-data efficiencyColumn" id="efficiencyHeader" >
+            <!-- Placeholder or default content -->
+          </td>
           <td class="show-tag-history">
             <tag-history-button image="{ image }"></tag-history-button>
           </td>
@@ -136,6 +141,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     import { matchSearch } from '../search-bar.riot';
     import ConfirmDeleteImage from '../dialogs/confirm-delete-image.riot';
     import { fetchReport, createRectanglesContainer, SEVERITY_MAP } from '../utility/utility';
+    import { fetchDiveReport } from '../utility/dive';
     const ACTION_CHECK_TO_DELETE = 'CHECK';
     const ACTION_UNCHECK_TO_DELETE = 'UNCHECK';
     const ACTION_DELETE_IMAGE = 'DELETE';
@@ -234,37 +240,50 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       async onMounted(props, state) {
         const vulnerabilitiesColumn = document.querySelectorAll('.vulnerabilitiesColumn');
         const vulnerabilitiesHeader = document.getElementById('vulnerabilitiesHeader');
-        const cols = ['col1', 'col2', 'col3', 'col4'].map(id => document.getElementById(id));
-        const isToolIncluded = props.pullUrl.includes('tool');
+        const efficiencyColumn = document.querySelectorAll('.efficiencyColumn');
+        const efficiencyHeader = document.getElementById('efficiencyHeader');
+        const cols = ['col1', 'col2', 'col3', 'col4', 'efficiencyColumn'].map(id => document.getElementById(id));
+        const isToolIncluded = true;
         console.log("isToolIncluded:",isToolIncluded);
         
+        const diveReportsData = {};
+        for (let i = 0, len = props.tags.length; i < len; i++) {
+          var diveReportData = await fetchDiveReport(props.tags[i]["name"].split("/")[0], props.tags[i]["name"].split("/")[1], props.tags[i]["tag"]);
+          diveReportsData[i] = diveReportData;
+        }
+        console.log("Dive Reports Data :- ", diveReportsData);
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach((row, idx) => {
+          if ('error' in diveReportsData[idx]) {
+            console.log("Error in accessing dive report data.");
+            row.querySelector('td.dive-dynamic-data').textContent = "NA";
+          } else {
+            console.log("Efficiency Score :- ", diveReportsData[idx].image.efficiencyScore);
+            row.querySelector('td.dive-dynamic-data').textContent = parseFloat(diveReportsData[idx].image.efficiencyScore).toFixed(2) * 100;
+          }
+        });
+
         if (isToolIncluded) {
             // Hide vulnerabilities column header
             vulnerabilitiesHeader.style.display = 'none';
-         
-
             // Hide vulnerabilities data cells
             vulnerabilitiesColumn.forEach(cell => cell.style.display = 'none');
-
             // Adjust column widths
-            cols.forEach(col => col.style.width = '25%');
+            cols.forEach(col => col.style.width = '20%');
           } else {
               // Show vulnerabilities column header
               vulnerabilitiesHeader.style.display = '';
-             
-
               // Show vulnerabilities data cells
               vulnerabilitiesColumn.forEach(cell => cell.style.display = '');
-
               // Adjust column widths
-              cols.forEach(col => col.style.width = '20%');
+              cols.forEach(col => col.style.width = '16%');
               console.log("Total tags : ", props.tags.length);
               const reports = {};
               for (let i = 0, len = props.tags.length; i < len; i++) {
                 var reportData = await fetchReport(props.tags[i]["name"].split("/")[0], props.tags[i]["name"].split("/")[1], props.tags[i]["tag"]);
                 reports[i] = reportData;
               }
-              console.log(reports);
+              console.log("Vulnerability reports data :- ", reports);
               const rows = document.querySelectorAll('tbody tr');
               rows.forEach((row, reportIdx) => {
                 if ('error' in reports[reportIdx]) {
@@ -284,7 +303,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 }
               });
           }
-       
       },
       supportShiftKey(selectedImage, addOrRemove) {
         if (!this.state.selectedImage) {
@@ -363,11 +381,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   </script>
   <style>
-    tag-table table th.architectures {
+    /* Aligning all headers and data cells to center */
+    tag-table table th,
+    tag-table table td {
       text-align: center;
     }
-    tag-table table th.vulnerabilities {
+
+    /* Specific tweaks for certain columns, if needed */
+    tag-table table th.architectures, 
+    tag-table table td.architectures {
       text-align: center;
     }
+
+    tag-table table th.vulnerabilities, 
+    tag-table table td.vulnerabilities {
+      text-align: center;
+    }
+
+    tag-table table th.efficiency, 
+    tag-table table td.efficiency {
+      text-align: center;
+    }
+
   </style>
 </tag-table>
